@@ -1,10 +1,121 @@
-const {interfaces: Ci, utils: Cu} = Components;
+const {interfaces: Ci, utils: Cu, classes: Cc} = Components;
 const self = {
 	name: 'DragControl',
+	contentPath: 'chrome://dragcontrol/content/',
 	aData: 0,
 };
 
 Cu.import('resource://gre/modules/Services.jsm');
+Cu.import('resource://gre/modules/devtools/Console.jsm');
+
+var addedHandlers = [];
+
+function dragHandler(DOMWin) {
+	this.win = DOMWin;
+	this.doc = DOMWin.document;
+	this.gBrowser = DOMWin.gBrowser;
+	if (!this.gBrowser) {
+		this.gBrowser = null;
+	}
+	this.controlPanel = createControlPanel(DOMWin);
+
+	for (var l in this.controlPanelEventListeners) {
+		this.controlPanel.addEventListener(l, this.controlPanelEventListeners[l].bind(this), false);
+	}
+	
+	if (this.gBrowser) {
+		for (var l in this.eventListeners) {
+			this.gBrowser.addEventListener(l, this.eventListeners[l].bind(this), false);
+		}
+	} else {
+		//no gBrowser
+		for (var l in this.eventListeners) {
+			this.win.addEventListener(l, this.eventListeners[l].bind(this), false);
+		}
+	}
+	
+	console.log(self.name + ' :: ', 'done init');
+}
+
+dragHandler.prototype.destroy = function() {
+	this.controlPanel.parentNode.removeChild(this.controlPanel);
+	if (this.gBrowser) {
+		for (var l in this.eventListeners) {
+			this.gBrowser.removeEventListener(l, this.eventListeners[l], false);
+		}
+	} else {
+		//no gBrowser
+		for (var l in this.eventListeners) {
+			this.win.removeEventListener(l, this.eventListeners[l], false);
+		}
+	}
+}
+
+dragHandler.prototype.eventListeners = {
+	dragstart: function(e) {
+		if (this.gBrowser) {
+			this.controlPanel.openPopup(this.gBrowser, 'overlap', 0, 0);
+		} else {
+			this.controlPanel.openPopup(this.win, 'overlap', 0, 0);
+		}
+	},
+	dragend: function(e) {
+	
+	},
+	dragover: function(e) {
+	
+	},
+	drop: function(e) {
+	
+	},
+	dragend: function(e) {
+		this.controlPanel.hidePopup();
+	}
+};
+
+dragHandler.prototype.controlPanelEventListeners = {
+	dragenter: function(e) {
+	
+	},
+	dragover: function(e) {
+	
+	},
+	dragleave: function(e) {
+	
+	},
+	drop: function(e) {
+	
+	}
+};
+
+function createControlPanel(win) {
+	var mainPopupSet = win.document.querySelector('#mainPopupSet');
+	if (!mainPopupSet) {
+		mainPopupSet = win.document.documentElement;
+	}
+	
+	var panel = win.document.createElement('panel');
+	var props = {
+		id: 'dragcontrol-control-panel',
+		noautohide: true,
+		noautofocus: true,
+		level: 'parent',
+		style: 'padding:15px; margin:0; width:300px; height:300px; background-color:transparent; -moz-pointer-events:none; border:0; -moz-appearance:none !important;'
+	}
+	for (var p in props) {
+		panel.setAttribute(p, props[p]);
+	}
+	 
+	var iframe = win.document.createElement('iframe');
+	iframe.setAttribute('style','border:0; background-color:rgba(255,255,255,.6); ;margin:0; padding:0; width:300px; height:300px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); border-radius:5px;');
+	iframe.setAttribute('src', self.contentPath + 'control-panel/index.htm');
+	panel.appendChild(iframe);
+	 
+	mainPopupSet.appendChild(panel);
+	
+	return panel;
+	//panel.openPopup(null, 'overlap', screen.availLeft, screen.availTop);
+}
 
 /*start - windowlistener*/
 var windowListener = {
@@ -40,12 +151,23 @@ var windowListener = {
 		}
 		//Stop listening so future added windows dont get this attached
 		Services.wm.removeListener(windowListener);
+		
+		[].forEach.call(addedHandlers, function(handler) {
+			//need to check if window (handler[0]) is open BUT for now im just doing try catch
+			try {
+				handler[1].destroy();
+			} catch(ex) {
+				console().warn('exception while destroying',ex);
+			}
+		});
 	},
 	//END - DO NOT EDIT HERE
 	loadIntoWindow: function (aDOMWindow, aXULWindow) {
 		if (!aDOMWindow) {
 			return;
 		}
+		var handler = new dragHandler(aDOMWindow);
+		addedHandlers.push([aDOMWindow, handler]);
 		
 	},
 	unloadFromWindow: function (aDOMWindow, aXULWindow) {
