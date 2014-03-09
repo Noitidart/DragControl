@@ -1,0 +1,143 @@
+@charset "utf-8";
+
+/*fonts*/
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(opensansnormal.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(opensanssemibold.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Open Sans Bold'), local('OpenSans-Bold'), url(opensanssemibolder.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Open Sans Italic'), local('OpenSans-Italic'), url(opensansitalic.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: 600;
+  src: local('Open Sans Semibold Italic'), local('OpenSans-SemiboldItalic'), url(opensanssemibolditalic.woff) format('woff');
+}
+@font-face {
+	font-family: 'iconfont-1';
+	src: url('iconfont.ttf') format('truetype');
+}
+/*end fonts*/
+body {
+	font-family: "Open Sans",sans-serif;
+	font-size: 14px;
+}
+
+#function {
+	font-weight: 700;
+}
+
+#description {
+	font-weight: 600;
+	font-style: italic;
+	color: #bbb;
+}
+
+.droppable {
+	height: 40px;
+	margin: 2px 4px;
+	width: 40px;
+	border: 1px solid #eee;
+	position: relative;
+	display: inline-block;
+	border-radius: 2px;
+	transition-duration: 250ms;
+	transition-property: box-shadow;
+}
+
+.droppable > span:before, .droppable >span:after {
+	position: absolute;
+	font-family:"iconfont-1";
+	text-align: center;
+	display: block;
+	transition-duration: 250ms;
+	transition-property: box-shadow;
+}
+
+.droppable  > .icon:before {
+	font-size: 16px;
+	bottom: 2px;
+	right: 2px;
+	width: 16px;
+	height: 16px;
+	color: #bbb;
+}
+
+.droppable > .icon:after {
+	font-size: 32px;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	color: #bbb;
+}
+
+.droppable:hover > .icon:before {
+	color: black;
+}
+.droppable:hover > .icon:after {
+	color: black;
+}
+
+.droppable:hover {
+	border-color: #ccc;
+	box-shadow: inset 0 0 5px #888;
+}
+
+.curtab:after {
+	content: "\35eb";
+	margin-top: 2px;
+}
+.newtab:after {
+	content: "\35eb";
+	bottom: 3px;
+	right: 0;
+}
+.newwin:after {
+	content: "\35ec";
+	margin-top: 3px;
+}
+.foreground:after {
+	content: "\3632";
+}
+.background:after {
+	content: "\35e4";
+}
+.search:after {
+	content: "\3632";
+	bottom: 3px;
+	right: 0;
+}
+.copy:after {
+	content: "\356f";
+	margin-top: 1px;
+}
+.save-default-folder:after {
+	content: "\3562";
+	margin-top: 2px;
+}
+.save-browse-folder:after {
+	content: "\3562";
+	margin-top: 2px;
+}
+.cancel:after {
+	content: "\35bd";
+}

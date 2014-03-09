@@ -56,7 +56,7 @@ dragHandler.prototype.eventListeners = {
 		if (this.gBrowser) {
 			this.controlPanel.openPopup(this.gBrowser, 'overlap', 0, 0);
 		} else {
-			this.controlPanel.openPopup(this.win, 'overlap', 0, 0);
+			this.controlPanel.openPopup(this.doc.documentElement, 'overlap', 0, 0);
 		}
 	},
 	dragend: function(e) {
@@ -98,16 +98,16 @@ function createControlPanel(win) {
 	var props = {
 		id: 'dragcontrol-control-panel',
 		noautohide: true,
-		noautofocus: true,
+		noautofocus: false,
 		level: 'parent',
-		style: 'padding:15px; margin:0; width:300px; height:300px; background-color:transparent; -moz-pointer-events:none; border:0; -moz-appearance:none !important;'
+		style: 'padding:15px; margin:0; width:300px; height:300px; background-color:transparent; border:0; -moz-appearance:none !important;'
 	}
 	for (var p in props) {
 		panel.setAttribute(p, props[p]);
 	}
 	 
 	var iframe = win.document.createElement('iframe');
-	iframe.setAttribute('style','border:0; background-color:rgba(255,255,255,.6); ;margin:0; padding:0; width:300px; height:300px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); border-radius:5px;');
+	iframe.setAttribute('style','border:0; background-color:rgba(255,255,255,.95); ;margin:0; padding:0; width:300px; height:300px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); border-radius:10px;');
 	iframe.setAttribute('src', self.contentPath + 'control-panel/index.htm');
 	panel.appendChild(iframe);
 	 

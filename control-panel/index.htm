@@ -3,24 +3,69 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>DragControl - Control Panel</title>
+		<link rel="stylesheet" type="text/css" href="style/main.css">
 	</head>
 	<body>
 		<div id="function">
 			Function: 
-			<span>current action to execute</span>
+			<span>Nothing (Default)</span>
+		</div>
+		<div id="description">
+			description
 		</div>
 		<div id="controls">
-			<div class="text">
-			
+			<div class="group target" desc="Workspace for action to take place in">
+				<span class="droppable">
+					<span class="icon curtab" desc="Current Tab"> </span>
+				</span>
+				<span class="droppable">
+					<span class="icon newtab" desc="New Tab"> </span>
+				</span>
+				<span class="droppable">
+					<span class="icon newwin" desc="New Window"> </span>
+				</span>
 			</div>
-			<div class="link">
-			
+			<div class="group target-behavior" desc="Behavior of workspace">
+				<span class="droppable">
+					<span class="icon foreground" desc="New Tab"> </span>
+				</span>
+				<span class="droppable">
+					<span class="icon background" desc="Current Tab"> </span>
+				</span>
 			</div>
-			<div class="image">
-			
+			<div class="group text">
+				<span class="droppable">
+					<span class="icon search" desc="Search"> </span>
+				</span>
 			</div>
-			<div class="search">
-			
+			<div class="group link">
+				<span class="droppable">
+					<span class="icon search" desc="Search"> </span>
+				</span>
+				<span class="group droppable">
+					<span class="icon copy" desc="Copy Text to Clipboard"> </span>
+				</span>
+			</div>
+			<div class="group download">
+				<span class="droppable">
+					<span class="icon save-default-folder" desc="Default Folder"> </span>
+				</span>
+				<span class="droppable">
+					<span class="icon save-browse-folder" desc="Browse Folders"> </span>
+				</span>
+			</div>
+			<div class="group image">
+				<span class="droppable">
+					<span class="icon save-default-folder" desc="Default Folder"> </span>
+				</span>
+				<span class="droppable">
+					<span class="icon save-browse-folder" desc="Browse Folders"> </span>
+				</span>
+			</div>
+			<div class="group">
+				<span class="droppable">
+					<span class="icon cancel" desc="Cancel"> </span>
+				</span>
 			</div>
 		</div>
 	</body>
