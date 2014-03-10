@@ -4,6 +4,38 @@
 		<meta charset="UTF-8">
 		<title>DragControl - Control Panel</title>
 		<link rel="stylesheet" type="text/css" href="style/main.css">
+		<script>
+			document.addEventListener('DOMContentLoaded', init, false);
+			
+			function init() {
+				var droppables = document.querySelectorAll('.droppable');
+				[].forEach.call(droppables, function(d, i) {
+					for (var l in eventListeners) {
+						d.addEventListener(l, eventListeners[l], false);
+					}
+					console.log('adding to droppable ' + i);
+				});
+			}
+			
+			var eventListeners = {
+				dragenter: function(e) {
+					console.log('droppable dragenter e=',e);
+					var d = e.target;
+					d.classList.add('hover');
+				},
+				dragover: function(e) {
+					e.preventDefault();
+				},
+				dragleave: function(e) {
+					console.log('droppable dragleave e=',e);
+					var d = e.target;
+					d.classList.add('hover');
+				},
+				drop: function(e) {
+					console.log('droppable drop e=',e);
+				}
+			}
+		</script>
 	</head>
 	<body>
 		<div id="function">

@@ -53,6 +53,7 @@ dragHandler.prototype.destroy = function() {
 
 dragHandler.prototype.eventListeners = {
 	dragstart: function(e) {
+		parseDragStartEvent.bind(this, e);
 		if (this.gBrowser) {
 			this.controlPanel.openPopup(this.gBrowser, 'overlap', 0, 0);
 		} else {
@@ -73,20 +74,94 @@ dragHandler.prototype.eventListeners = {
 	}
 };
 
-dragHandler.prototype.controlPanelEventListeners = {
-	dragenter: function(e) {
-	
-	},
-	dragover: function(e) {
-	
-	},
-	dragleave: function(e) {
-	
-	},
-	drop: function(e) {
-	
+function parseDragStartEvent(evt) {
+	let d = {};
+	let dt = evt.dataTransfer;
+	let el = evt.target;
+	if (el.nodeType == 3) {
+		// text node ('nodeName' == '#text')
+		// looks like:
+		//  1. the el.textContent is the content of the element being dragged, not the selection.
+		//  2. it only happens when you drag the selection
+		// console.log(el.textContent);
 	}
-};
+
+	let data = dt.getData('text/plain');
+	data = trim(data);
+	if (data != '') {
+		d['text'] = data;
+		d['primaryKey'] = 'text';
+	}
+
+	if (evt.explicitOriginalTarget && evt.explicitOriginalTarget.tagName == 'IMG') {
+		d['image'] = evt.explicitOriginalTarget.src;
+		if (d['image'] != '') {
+			d['primaryKey'] = 'image';
+		}
+	}
+
+	data = dt.getData('text/uri-list');
+	if (data === '') {
+		// still try to get a link
+		let a = el;
+		while (a) {
+			if (a.tagName == 'A') {
+				data = a.href;
+				break;
+			}
+			a = a.parentNode;
+		}
+	}
+	if (data !== '' && isLinkSupported(data)) {
+		d['link'] = data;
+		if (el.nodeType == 1 && el.tagName == 'A') {
+			d['primaryKey'] = 'link';
+
+			// TODO: shoud we do this?
+			let text = el.textContent;
+			text = trim(text);
+			if (text == '') {
+				delete d['text'];
+			} else {
+				d['text'] = text;
+			}
+		}
+	}
+
+	// selection(s)
+	let sel = evt.target.ownerDocument.defaultView.getSelection();
+	sel = sel.toString();
+	sel = trim(sel);
+	if (sel != '') {
+		d['selection'] = sel;
+
+		if (el.nodeType == 3 && el.nodeName == '#text') { // if the user is dragging the selected text, it will be the primaryKey.
+			d['primaryKey'] = 'selection';
+		}
+
+	}
+
+	// if user selected something, or if there is no link,
+	// we'll check whether the text itself is a link
+	let text = d['selection'] || (d['link'] ? null : d['text']);
+	if (text) {
+		text = trim(text);
+		if (text && isURL(text)) {
+			d['link'] = text;
+			d['primaryKey'] = 'link';
+		}
+	}
+
+
+	if (d['primaryKey'] === undefined) {
+		return null;
+	}
+
+	d['DOMWin'] = this.DOMWin;
+	d['gBrowser'] = this.DOMWin.gBrowser;
+
+	return d;
+}
 
 function createControlPanel(win) {
 	var mainPopupSet = win.document.querySelector('#mainPopupSet');
